@@ -57,7 +57,7 @@ En este tutorial, aprenderá cómo instalar y configurar Hadoop en Ubuntu.
 - Al menos 20GB de espacio en disco
 - Conexión a Internet
 
-## Parte 0. Instalacion Ubuntu 24.04 en Windows usando WSL2
+## ☕ Parte 0. Instalacion Ubuntu 24.04 en Windows usando WSL2
 
 ### A. Habilitar Virtualización en Windows 
 Habilitar la plataforma de máquina virtual con:
@@ -149,7 +149,7 @@ wsl --terminate Ubuntu-24.04
 wsl --unregister Ubuntu-24.04
 ```
 
-## Parte 1: Preparación del Sistema
+## 🧰 Parte 1: Preparación del Sistema
 
 ### 1.1 Actualizar el Sistema
 
@@ -201,7 +201,7 @@ Verificar:
 echo $JAVA_HOME
 ```
 
-## Parte 2: Crear Usuario para Hadoop
+## 👤 Parte 2: Crear Usuario para Hadoop
 
 ### 2.1 Crear Usuario Dedicado
 
@@ -218,7 +218,7 @@ Cambiar al nuevo usuario:
 su - hadoop
 ```
 
-## Parte 3: Configurar SSH sin Contraseña
+## 🔐 Parte 3: Configurar SSH sin Contraseña
 
 Hadoop requiere acceso SSH para gestionar sus nodos.
 
@@ -255,7 +255,7 @@ Salir de la sesión SSH:
 exit
 ```
 
-## Parte 4: Descargar e Instalar Hadoop
+## 📦 Parte 4: Descargar e Instalar Hadoop
 
 ### 4.1 Descargar Hadoop
 
@@ -279,7 +279,7 @@ sudo mv hadoop-3.4.2 /usr/local/hadoop
 sudo chown -R hadoop:hadoop /usr/local/hadoop
 ```
 
-## Parte 5: Configurar Variables de Entorno de Hadoop
+## 🌐 Parte 5: Configurar Variables de Entorno de Hadoop
 
 ### 5.1 Editar .bashrc
 
@@ -319,7 +319,7 @@ Buscar la línea `# export JAVA_HOME=` y reemplazarla con:
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ```
 
-## Parte 6: Configurar Hadoop
+## ⚙️ Parte 6: Configurar Hadoop
 
 ### 6.1 Configurar core-site.xml
 
@@ -409,7 +409,7 @@ Agregar:
 </configuration>
 ```
 
-## Parte 7: Crear Directorios Necesarios
+## 🔄 Parte 7: Crear Directorios Necesarios
 
 ```bash
 mkdir -p ~/hadoopdata/hdfs/namenode
@@ -417,7 +417,7 @@ mkdir -p ~/hadoopdata/hdfs/datanode
 mkdir -p ~/hadoopdata/tmp
 ```
 
-## Parte 8: Formatear el Sistema de Archivos HDFS
+## 📦 Parte 8: Formatear el Sistema de Archivos HDFS
 
 **Importante:** Solo se hace una vez, antes del primer inicio.
 
@@ -427,7 +427,7 @@ hdfs namenode -format
 
 Deberías ver un mensaje indicando que el formato fue exitoso.
 
-## Parte 9: Iniciar Hadoop
+## ▶️ Parte 9: Iniciar Hadoop
 
 ### 9.1 Iniciar HDFS
 
@@ -455,7 +455,7 @@ Deberías ver procesos como:
 - NodeManager
 - Jps
 
-## Parte 10: Verificar la Instalación
+## 🌍 Parte 10: Verificar la Instalación
 
 ### 10.1 Acceder a las Interfaces Web
 
@@ -502,8 +502,49 @@ Eliminar un archivo:
 ```bash
 hdfs dfs -rm /user/hadoop/test.txt
 ```
+## 🧪 Paso 11: Resumen del flujo completo
 
-## Parte 11: Detener Hadoop
+### 1. Verifica tu archivo de entrada
+```bash
+hdfs dfs -cat /user/hadoop/input.txt
+```
+### 2. Elimina salida anterior (si existe)
+```bash
+hdfs dfs -rm -r /user/hadoop/output
+```
+### 3. Ejecuta WordCount
+```bash
+hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.4.2.jar wordcount /user/hadoop/input.txt /user/hadoop/output
+```
+
+Después de ejecutar el comando, deberías ver en la terminal algo como:
+2025-10-08 09:23:51,339 INFO mapreduce.Job: Job job_1759930577015_0002 `completed successfully`
+
+### 4. Muestra el resultado
+```bash
+hdfs dfs -cat /user/hadoop/output/part-r-00000
+```
+### 5. Ejemplo de salida esperada
+
+Si tu input.txt contiene:
+```rmarkdown
+Hola mundo Hadoop Hola
+```
+
+Entonces el resultado será:
+```rmarkdown
+24.04           1
+Apache          1
+Funcionamiento  1
+Hadoop          1
+Probando        1
+Ubuntu          1
+de              1
+en              1
+v.3.4.2         1
+```
+
+## 🛑 Parte 12: Detener Hadoop
 
 Cuando necesites detener los servicios:
 
@@ -511,6 +552,19 @@ Cuando necesites detener los servicios:
 stop-yarn.sh
 stop-dfs.sh
 ```
+## 🔐 Paso 13: Accediendo con SSH
+
+### Conectarse a Hadoop con ssh localhost
+```rmarkdown
+ssh hadoop@locahost
+```
+Ingresa tu `contraseña` y continua tu trabajo
+
+### Conectarse a Hadoop con ssh < IP_PUBLICA >
+```rmarkdown
+ssh hadoop@<IP_PUBLICA>
+```
+Ingresa tu contraseña y continua tu trabajo
 
 ## Solución de Problemas Comunes
 
