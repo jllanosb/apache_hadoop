@@ -4,6 +4,51 @@
 
 Apache Hadoop es un framework de código abierto diseñado para el procesamiento distribuido de grandes conjuntos de datos. Esta guía te llevará paso a paso por la instalación y configuración de Hadoop en modo pseudo-distribuido en Ubuntu 24.04.
 
+## Componentes Principales 
+### 1. HDFS (Hadoop Distributed File System) 
+
+#### Propósito: Sistema de archivos distribuido.
+Características:
+- Tolerante a fallos y altamente disponible.
+- Almacena datos en bloques (típicamente de 128 MB en Hadoop 2+).
+- Replica los datos (por defecto, 3 copias) en diferentes nodos para evitar pérdidas.
+
+### 2. MapReduce 
+
+#### Propósito: Modelo de programación para procesamiento distribuido.
+Fases:
+- Map: Procesa los datos de entrada y genera pares clave-valor.
+- Reduce: Combina los resultados del map para producir la salida final.
+
+Ideal para: Procesamiento por lotes (batch processing), no para tiempo real.
+
+### 3. YARN (Yet Another Resource Negotiator) 
+
+#### Propósito: Gestiona recursos y programa tareas en el clúster.
+Componentes:
+- ResourceManager: Coordinador central de recursos.
+- NodeManager: Gestiona recursos en cada nodo.
+- ApplicationMaster: Supervisa la ejecución de cada aplicación.
+
+### 4. Hadoop Common 
+
+Bibliotecas y utilidades compartidas por todos los módulos.
+
+## Ecosistema de Hadoop 
+
+Además de sus componentes centrales, Hadoop cuenta con un rico ecosistema: 
+
+- Hive: Permite consultar datos con un lenguaje similar a SQL.
+- Pig: Lenguaje de alto nivel para flujos de datos.
+- HBase: Base de datos NoSQL para acceso en tiempo real.
+- Spark: Motor de procesamiento rápido en memoria (más veloz que MapReduce).
+- ZooKeeper: Servicio de coordinación distribuida.
+- Sqoop: Transfiere datos entre Hadoop y bases de datos relacionales.
+- Flume: Recoge y agrega logs o flujos de datos.
+- Oozie: Programador de flujos de trabajo.
+
+En este tutorial, aprenderá cómo instalar y configurar Hadoop en Ubuntu.
+
 ## Requisitos Previos
 
 - Ubuntu 24.04 LTS instalado
@@ -11,6 +56,98 @@ Apache Hadoop es un framework de código abierto diseñado para el procesamiento
 - Mínimo 4GB de RAM
 - Al menos 20GB de espacio en disco
 - Conexión a Internet
+
+## Parte 0. Instalacion Ubuntu 24.04 en Windows usando WSL2
+
+### A. Habilitar Virtualización en Windows 
+Habilitar la plataforma de máquina virtual con:
+
+```bash
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+```
+
+### B. Instalar WSL2 en Windows
+
+Verificar que Windows sea versión 2004 o superior. Se puede revisar con el comando winver.
+
+Abrir PowerShell como administrador y habilitar WSL con:
+
+```bash
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+```
+Necesario `Reiniciar el equipo`.
+
+### C. Verificar Instalación y Activar WSL v2 de forma predeterminada
+Establecer WSL2 como versión predeterminada:
+
+```bash
+wsl --set-default-version 2
+```
+
+Nota: `Si pide actualizar [descargar WSL2](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi) y ejecuta el instalador de actualización manualmente`
+
+### D. Verificar Instalación WSL2
+
+Para listar las instancias o distribuciones de WSL (Windows Subsystem for Linux) instaladas en Windows, se utiliza el comando en la terminal o PowerShell:
+
+```bash
+wsl --list --verbose
+```
+o su versión corta:
+```bash
+wsl -l -v
+```
+
+Este comando muestra todas las distribuciones Linux instaladas, el estado de cada una (si está corriendo o detenida) y la versión de WSL que usan. También se puede usar simplemente `wsl --list` para ver las distribuciones sin detalles adicionales.
+
+Además, si se quiere solo listar las `distribuciones que están corriendo en windows`, se emplea:
+
+```bash
+wsl --list --running
+```
+Listar las distribuciones disponibles con:
+
+```bash
+wsl --list --online
+```
+### E. Instalar Ubuntu 24.04 en Windows usando WSL2
+
+#### Método 1: Instalar desde la terminal con WSL
+
+Abrir PowerShell como administrador e Instalar Ubuntu 24.04 con:
+
+```bash
+wsl --install -d Ubuntu-24.04
+```
+Esperar a que finalice la instalación y luego inicializar la distribución para completar la configuración inicial.
+
+#### Método 2: Instalar desde Microsoft Store
+
+Abrir Microsoft Store en Windows.
+
+Buscar `Ubuntu` y elegir `Ubuntu 24.04 LTS`.
+
+Hacer clic en `Obtener` o `Instalar`.
+
+Una vez instalada, iniciar la aplicación para terminar la configuración.
+
+### F. Iniciar instancia Ubuntu 24.04 en WSL2
+ Abrir una ventana de PowerShell o CMD o Terminal y ejecutar el comando:
+
+```bash
+wsl -d Ubuntu-24.04
+```
+### G. Apagar Instancia Ubuntu 24.04 en WSL2
+ Abrir una ventana de PowerShell o CMD o Terminal y ejecutar el comando:
+
+```bash
+wsl --terminate Ubuntu-24.04
+```
+
+### H. Eliminar instancia de ubuntu creada con WSL2
+```bash
+wsl --unregister Ubuntu-24.04
+```
 
 ## Parte 1: Preparación del Sistema
 
