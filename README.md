@@ -330,16 +330,18 @@ sudo nano $HADOOP_HOME/etc/hadoop/core-site.xml
 Agregar entre las etiquetas `<configuration>`:
 
 ```xml
-<configuration>
+
     <property>
         <name>fs.defaultFS</name>
         <value>hdfs://localhost:9000</value>
+        <!-- Habilitar estas lineas cuando se trabaje con IP_PUBLICA-->
+        <!--value>hdfs://<IP_PUBLICA>:9000</value-->
     </property>
     <property>
         <name>hadoop.tmp.dir</name>
         <value>/home/hadoop/hadoopdata/tmp</value>
     </property>
-</configuration>
+
 ```
 
 ### 6.2 Configurar hdfs-site.xml
@@ -348,10 +350,10 @@ Agregar entre las etiquetas `<configuration>`:
 sudo nano $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 ```
 
-Agregar:
+Agregar entre las etiquetas `<configuration>`:
 
 ```xml
-<configuration>
+
     <property>
         <name>dfs.replication</name>
         <value>1</value>
@@ -364,7 +366,12 @@ Agregar:
         <name>dfs.datanode.data.dir</name>
         <value>file:///home/hadoop/hadoopdata/hdfs/datanode</value>
     </property>
-</configuration>
+    <!-- Habilitar esta linea cuando ejecutes en un servidor con IP Pública-->
+    <!--property>
+        <name>dfs.namenode.http-bind-host</name>
+        <value><IP_PUBLICA></value>
+    </property-->
+
 ```
 
 ### 6.3 Configurar mapred-site.xml
@@ -406,6 +413,15 @@ Agregar:
         <name>yarn.nodemanager.env-whitelist</name>
         <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
     </property>
+    <!-- Habilitar estas lineas cuando trabajen con IP_PUBLICA-->
+    <!--property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>0.0.0.0:8088</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.webapp.address</name>
+        <value>0.0.0.0:8042</value>
+    </property-->
 </configuration>
 ```
 
@@ -426,6 +442,8 @@ hdfs namenode -format
 ```
 
 Deberías ver un mensaje indicando que el formato fue exitoso.
+
+- 2025-10-18 21:28:55,635 INFO common.Storage: Storage directory /home/hadoop/hadoopdata/hdfs/namenode `has been successfully formatted`.
 
 ## ▶️ Parte 9: Iniciar Hadoop
 
@@ -505,6 +523,13 @@ hdfs dfs -rm /user/hadoop/test.txt
 ## 🧪 Paso 11: Resumen del flujo completo
 
 ### 1. Verifica tu archivo de entrada
+Copia un archivo de ejemplo:
+
+```bash
+echo "Probando Funcionamiento de Apache Hadoop v.3.4.2 en Ubuntu 24.04" > input.txt
+hdfs dfs -put input.txt /user/hadoop/
+```
+
 ```bash
 hdfs dfs -cat /user/hadoop/input.txt
 ```
@@ -518,7 +543,7 @@ hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.4.2.j
 ```
 
 Después de ejecutar el comando, deberías ver en la terminal algo como:
-2025-10-08 09:23:51,339 INFO mapreduce.Job: Job job_1759930577015_0002 `completed successfully`
+- 2025-10-08 09:23:51,339 INFO mapreduce.Job: Job job_1759930577015_0002 `completed successfully`
 
 ### 4. Muestra el resultado
 ```bash
